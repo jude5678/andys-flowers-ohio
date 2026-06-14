@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>checkout</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=shopping_bag" />
+
+        <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="https://js.stripe.com/v3/stripe.js"></script>
+    </head>
+    <body class="landing is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header" class="alt">
+					
+					<nav id="nav">
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><a href="floralarrangements.ejs" class="icon solid fa-angle-down">Floral Arrangements</a></li>
+							<li><a href="homedecor.html" class="button">Home Decor</a></li>
+							<li><a href="plants.html" class="button">Plants</a></li>
+							<li><a href="weddings.html" class="button">Weddings</a></li>
+							<li><a href="aboutus.html" class="button">About Us</a></li>
+						</ul>
+					</nav>
+                   
+				</header>
+
+            <!-- Banner -->
+            <section id="banner-two">
+            <h2>Aurora Flower Shoppe</h2>
+
+            <!-- shopping cart -->
+            <!-- <span>
+                
+                <span class="subtotal">
+                    subtotal
+                </span>
+            </span> -->
+            </section>
+            <main>
+            
+            <div id="root"></div>
+            <div id="stripe-container">
+                <!-- this div is managed by vanilla JS, not React -->
+                <div style="border: 1px solid #ccc; padding: 20px; margin-top: 20px;">
+                  <h3>Complete Your Payment</h3>
+                  <form id="stripe-form">
+                    <div id="stripe-payment-element" style="margin-bottom: 20px; min-height: 40px;"></div>
+                    <button type="submit" id="stripe-submit-btn">Pay Now</button>
+                  </form>
+                  <div id="stripe-error" style="color: red; margin-top: 10px;"></div>
+                </div>
+            </div>
+
+                <script type="text/babel">
+
+                    // react globals
+                    const { useState, useEffect } = React
+
+                    //medusa variable
+                    import { sdk } from "../lib/sdk"
+                   
+
+                    
+            
+                    function ShoppingApp() {
+                            const [products] = useState(window.PRODUCT_DATA || []);
+                            const [isCartVisible, setIsCartVisible] = useState(false);
+                            
+                            const [cartItems, setCartItems] = useState(() => {
+                                const savedCart = sessionStorage.getItem('userCart');
+                                return savedCart ? JSON.parse(savedCart) : [];
+                            });
+
+                             // DEBUG: Log every render
+                            console.log('🔄 ShoppingApp re-rendering');
+                            console.log('Cart items length:', cartItems.length);
+                            console.log('Is cart visible:', isCartVisible);
+
+                            useEffect(() => {
+                                sessionStorage.setItem('userCart', JSON.stringify(cartItems));
+                                console.log('💾 Cart saved to sessionStorage, this triggers re-render');
+                            }, [cartItems]);
+                                                                
+                            // useEffect(() => {
+                            //     sessionStorage.setItem('userCart', JSON.stringify(cartItems));
+                            // }, [cartItems])
+
+                        
+                    
+                            const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                            const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 15);
+                    
+                            const handleAddClick = (e, product) => {
+                                e.preventDefault();
+                                const numericPrice = parseFloat(product.formattedPrice.replace(/[^0-9.]/g, ''));
+                                const thumbnail = product.images[0]?.url;
+                                
+                                if (!isNaN(numericPrice)) {
+                                    setCartItems(prevItems => {
+                                        const existingItem = prevItems.find(item => item.name === product.title);
+                                        if (existingItem) {
+                                            return prevItems.map(item =>
+                                                item.name === product.title 
+                                                    ? { ...item, quantity: item.quantity + 1 } 
+                                                    : item
+                                            );
+                                        }
+                                        return [...prevItems, {  thumbnail: thumbnail, name: product.title, price: numericPrice, quantity: 1 }];
+                                    });
+                                }
+                            };
+                    
+                            const handleRemoveClick = (indexToRemove) => {
+                                setCartItems(prevItems => 
+                                    prevItems.filter((_, index) => index !== indexToRemove)
+                                );
+                            };
+                    
+                            const updateQuantity = (index, delta) => {
+                                setCartItems(prevItems => prevItems.map((item, i) => {
+                                    if (i === index) {
+                                        const newQty = Math.max(1, item.quantity + delta);
+                                        return { ...item, quantity: newQty };
+                                    }
+                                    return item;
+                                }))
+                            };
+
+                            // get customer's shipping info
+                            sdk.store.cart.update(cart.id, {
+                                email: "customer@example.com",
+                                region_id: "region_123",
+                                shipping_address: {
+                                    first_name: "John",
+                                    last_name: "Doe",
+                                    address_1: "123 Main St",
+                                    city: "New York",
+                                    postal_code: "10001",
+                                    country_code: "us",
+                                    province: "us-ny",
+                                    phone: "1234567890",
+                                }
+                            })
+                            .then(({ cart: updatedCart }) => {
+                                console.log(updatedCart)
+                            })
+
+                            // retrieve available shipping options
+                            sdk.store.fulfillment.listCartOptions({
+                                cart_id: cart.id,
+                            })
+                            .then(({ shipping_options }) => {
+                                console.log(shipping_options) // show these to the customer
+                            })
+
+                            // once chosen by customer, add it to cart
+                            sdk.store.cart.addShippingMethod(cart.id, {
+                                option_id: "so_123", // ID of the chosen shipping option
+                            })
+                            .then(({ cart: updatedCart }) => {
+                                console.log(updatedCart)
+                            })
+
+                            // determine status of cart completion
+                            sdk.store.cart.complete(cart.id).then((data) => {
+                                if (data.type === "cart" && data.cart) {
+                                    // an error occurred
+                                    console.error(data.error)
+                                } else if (data.type === "order" && data.order) {
+                                    // Order placed successfully
+                                    localStorage.removeItem("cart_id")
+                                    console.log(data.order)
+                                }
+                            })
+
+                            return (
+                                <div className="checkoutPage">
+                                    <h1> Checkout </h1>
+
+                                    <div className="checkoutColumns">
+
+                                        <div className="columnOne">
+                                        
+                                            <div className="sendingFrom">
+                                                <h2> Sending from </h2>
+                                                <form action="" method="get">
+                                                    <div className="lineOne">
+                                                        
+                                                        <label htmlFor="name"> First name * 
+                                                            <input type="text" name="name" id="name" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                        <label htmlFor="name"> Last name * 
+                                                            <input type="text" name="name" id="name" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                    </div>
+                                                    <div className="lineTwo">
+                                                        
+                                                        <label htmlFor="phone"> Phone 
+                                                            <input type="text" name="phone" id="phone" onChange={(e) => setState(e.target.value)} />
+                                                        </label>
+
+                                                        <label htmlFor="email"> Email address * 
+                                                            <input type="email" name="email" id="email" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                    </div>
+                                                    <div className="lineThree">
+                                                        
+                                                    <label htmlFor="date"> Delivery Date*
+                                                        <input  type="date" 
+                                                                className="custom-date"
+                                                                value=""
+                                                                onChange={(e) => setState(e.target.value)}
+                                                                required />
+                                                    </label>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div className="deliveringTo">
+                                                <h2> Delivering to </h2>
+                                                <form action="" method="get">
+                                                    <div className="lineOne">
+                                                        
+                                                        <label htmlFor="name"> First name * 
+                                                            <input type="text" name="name" id="name" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                        <label htmlFor="name"> Last name * 
+                                                            <input type="text" name="name" id="name" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                    </div>
+                                                    <div className="lineThree">
+                                                        
+                                                        <label htmlFor="phone"> Phone
+                                                            <input  type="text" name="phone" id="phone" onChange={(e) => setState(e.target.value)} />
+                                                        </label>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div className="recipientAddress">
+                                                <h2> Recipient Address </h2>
+                                                <form action="" method="get">
+                                                    <div className="lineThree">
+
+                                                        <label htmlFor="company"> Company Name
+                                                            <input  type="text" name="company" id="company" onChange={(e) => setState(e.target.value)} />
+                                                        </label>
+
+                                                    </div>
+                                                    <div className="lineOne">
+                                                        
+                                                        <label htmlFor="name"> State / County * 
+                                                            <input type="text" name="name" id="name" placeholder="Ohio" disabled />
+                                                        </label>
+
+                                                        <label htmlFor="name"> Town / City * *
+                                                            <input type="text" name="name" id="name" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                    </div>
+                                                    <div className="lineOne">
+                                                        
+                                                        <label htmlFor="name"> Address Line 1
+                                                            <input type="text" name="name" id="name" placeholder="Ohio" onChange={(e) => setState(e.target.value)} required />
+                                                        </label>
+
+                                                        <label htmlFor="name"> Address Line 2
+                                                            <input type="text" name="name" id="name" onChange={(e) => setState(e.target.value)} />
+                                                        </label>
+
+                                                    </div>
+                                                    <div className="lineThree">
+
+                                                        <label htmlFor="zipcode"> Postcode / ZIP
+                                                            <input  type="text" name="zipcode" id="zipcode" onChange={(e) => setState(e.target.value)} required/>
+                                                        </label>
+
+                                                    </div>
+
+                                                    <div className="lineThree">
+
+                                                        <label htmlFor="deliveryInstructions"> Delivery Instructions *
+                                                            <textarea name="deliveryInstructions" id="deliveryInstructions" rows="4" required
+                                                            placeholder="Please sepcify any additional delivery details here, we aim to deliver all orders between 10am-4pm.">
+                                                            </textarea>
+                                                        </label>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        
+                                            <div className="giftMessage">
+                                                <h2> Gift message </h2>
+                                                <form action="" method="get">
+                                                    <div className="lineThree">
+
+                                                        <label htmlFor="giftMessage"> 
+                                                            <textarea name="giftMessage" id="giftMessage" rows="4"
+                                                            placeholder="Please note your name is not automatically added to the gift message">
+                                                            </textarea>
+                                                        </label>
+
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+
+                                        <div className="yourOrder">
+                                            <h2> Your Order</h2>
+                                            <table>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Product</td>
+                                                        <td>Subtotal</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            
+                                                            <ul className="cart-item-names">
+                                                                {cartItems.map((item, index) => (
+                                                                    <li key={index} style={{ fontSize: '0.8em', display: 'flex', justifyContent: 'center', marginBottom: '.3em' }}>
+                                                                        <span>
+                                                                            <img 
+                                                                                src={item.thumbnail} 
+                                                                                alt={item.name} 
+                                                                                style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '4px' }} 
+                                                                            />
+                                                                            <div>
+                                                                            {item.name} x{item.quantity}
+                                                                            </div>
+                                                                        </span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+
+                                                        </td>
+                                                        <td> <p>${subtotal.toFixed(0)}</p> </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Subtotal</td>
+                                                        <td> ${subtotal.toFixed(0)} </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Shipment</td>
+                                                        <td>Enter your address to view shipping options.</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Tax</td>
+                                                        <td>$15</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total</td>
+                                                        <td> ${total.toFixed(0)} </td>
+                                                    </tr>
+                                                
+                                            
+
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                    </div>
+                                    
+                                </div>
+                            )
+                        }
+
+                        const root = ReactDOM.createRoot(document.getElementById('root'));
+                        root.render(<ShoppingApp />);
+                </script>
+
+                <script>
+                    console.log('setting up Stripe with vanilla JS');
+                
+                    let stripeSetupComplete = false;
+                
+                    function setupStripe() {
+                    if (stripeSetupComplete) return;
+                    
+                    console.log('starting Stripe setup...');
+                    
+                    fetch('/create-payment-intent', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: 1999, currency: 'usd' })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log('got clientSecret');
+                        
+                        const stripe = Stripe('pk_test_51TIzQcDTKOEuTpmuoPJ9VwFDK3JZViceRb7zlGznAEidYNxLkOWPTupwqD1PGkHF3kUSvqVqX6jMUZMclIzB59iK0026vJFEpv');
+                        const elements = stripe.elements({ clientSecret: data.clientSecret });
+                        const paymentElement = elements.create('payment');
+                        
+                        paymentElement.mount('#stripe-payment-element');
+                        console.log('Stripe mounted successfully');
+                        
+                        document.getElementById('stripe-form').onsubmit = async (e) => {
+                        e.preventDefault();
+                        
+                        const submitBtn = document.getElementById('stripe-submit-btn');
+                        const errorDiv = document.getElementById('stripe-error');
+                        
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Processing...';
+                        errorDiv.textContent = '';
+                        
+                        const result = await stripe.confirmPayment({
+                            elements,
+                            confirmParams: { return_url: window.location.origin + '/success' }
+                        });
+                        
+                        if (result.error) {
+                            errorDiv.textContent = result.error.message;
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Pay Now';
+                        }
+                        };
+                        
+                        stripeSetupComplete = true;
+                    })
+                    .catch(err => {
+                        console.error('Stripe setup error:', err);
+                        document.getElementById('stripe-error').textContent = 'Payment form failed to load';
+                    });
+                    }
+                
+                    // Run after a delay to ensure React is completely done
+                    setTimeout(setupStripe, 500);
+                </script>
+
+
+                
+            
+             
+             
+             
+            
+             <!-- <main id="products">
+
+               
+
+                <!-- <section class="arrangements">
+                    <img src="assets/css/images/mixed-flowers-04(1).jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Mixed Flowers 01</h3>
+                    <span>$55</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/mixed-flowers-02(1).jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Mixed Flowers 02</h3>
+                    <span>$65</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/mixed-flowers-03(1).jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Mixed Flowers 03</h3>
+                    <span>$55</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/roses-01(1).jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Roses 01</h3>
+                    <span>$85</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/mixed-flowers-01.jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Roses 02</h3>
+                    <span>$85</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/roses-03.jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Roses 03</h3>
+                    <span>$85</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/tulips-01(1).jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Tulips 01</h3>
+                    <span>$75</span>
+                </section>
+
+                <section class="arrangements arrangements-1">
+                    <img src="assets/css/images/carnations-01(1).jpg" alt="mixed flowers bouquet" class="florals-1 row-shadow">
+                    <h3 class="products-header">Carnations 01</h3>
+                    <span>$75</span>
+                </section>
+
+                <section id="sidenote">
+                    <p>We also offer custom arrangements so if you have something specific in mind, please feel free to reach out to us!</p>
+                </section> --> 
+            
+
+            </main>
+          
+
+            <!-- CTA -->
+            <section id="cta">
+                <section class="about-us">
+                    <h2>About Us</h2>
+                    <p>
+                        Aurora Flower Shoppe is a floral boutique that offers beautiful designs for several different occasions. We are dedicated to serving our guests with specialized floral arrangements that will make any moment that much more meaningful.
+						</p>
+					</section>
+
+					<section class="hours">
+						<h2>Store Hours</h2>
+						<p>Monday: 9AM - 4PM<br>
+						Tuesday: 9AM - 4PM<br>
+						Wednesday: 9AM - 4PM<br>
+						Thursday: 9AM - 4PM<br>
+						Friday: 9AM - 6PM<br>
+						Saturday: 10AM - 6PM<br>
+						Sunday: Closed
+						</p>
+					</section>
+
+					<section class="contact-us">
+						<h2>Contact Us</h2>
+						<p>Phone: 440-###-####</p>
+					</section>
+				</section>
+
+	    	<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						
+						<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li>
+							<a href="#" class="icon brands fa-envelope">
+								<svg
+									xmlns="http://www.w3.org/2000/svg" 
+									viewBox="0 -100 512 512">
+									<path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
+								</svg>
+								<span class="label">Envelope</span>
+							</a>
+						</li>
+			
+					</ul>
+					<ul class="copyright">
+						<li>&copy; Aurora Flower Shoppe</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</footer>
+
+        </div>
+
+        <!-- Scripts -->
+         
+
+           
+          
+          
+            <!-- React and ReactDOM from CDN -->
+            <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+            <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.dropotron.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+            <script src="assets/js/main.js"></script>
+    </body>
+</html>

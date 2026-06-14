@@ -1,0 +1,219 @@
+/*
+Theme Name: jquery-com
+Template: jquery
+Description: Theme for jquery.com and blog.jquery.com
+*/
+
+a,
+.title {
+	color: #b24926;
+}
+#content a:hover {
+	color: #333;
+}
+
+/* Home Page */
+
+#home-content {
+	margin-bottom: 15px;
+}
+
+#banner-secondary a,
+#banner-secondary a:hover {
+	color: #b3b3b3;
+}
+#banner-secondary h3 {
+	color: #7acef4;
+	margin-bottom: 0.5em;
+}
+
+#banner-secondary .features-box p {
+	font-size: .8em;
+	line-height: 1em;
+	padding: 0;
+}
+
+.feature-box-image {
+	margin: 0 auto 1em auto;
+	width: 120px;
+	height: 107px;
+	overflow: hidden;
+}
+.lightweight-footprint .feature-box-image {
+	background: url('i/feature-sprites.png') 0 0 no-repeat;
+}
+.css3-compliant .feature-box-image{
+	background: url('i/feature-sprites.png') -139px 0 no-repeat;
+}
+.cross-browser .feature-box-image{
+	background: url('i/feature-sprites.png') -278px 0 no-repeat;
+	transition: all 0.4s;
+}
+.cross-browser .feature-box-image:hover {
+	transition: all 0.7s;
+	transform: rotate(6.28rad);
+}
+
+#banner-secondary .download-main .download-options {
+	margin-top: 1em;
+}
+#banner-secondary .download-options a {
+	display: block;
+}
+#banner-secondary .download-main .button {
+	float: none;
+	box-shadow: 0 0 20px rgba(209, 143, 79, 0.6);
+	border-radius: 0;
+	border: none;
+	transition: all 1s;
+}
+#banner-secondary .download-main .button:hover {
+	box-shadow: 0 0 25px rgba(209, 143, 79, 0.9);
+}
+#content #banner-secondary .download-main > a {
+	display: block;
+	padding: 0 0 .5em 0;
+	font-size: 2em;
+	width: 100%;
+	text-align: center;
+	text-decoration: none;
+	line-height: 0.8em;
+}
+#content #banner-secondary .download-main > a span {
+	display: block;
+	font-size: 0.6em;
+}
+#content #banner-secondary .download-main > a span.download {
+	background: url('i/download.png') 0 0;
+	width: 44px;
+	height: 37px;
+	position: relative;
+	top: 1em;
+	display: inline-block;
+	margin-right: 0.5em;
+}
+#content #banner-secondary .download-main .support-notice {
+	font-size: 12px;
+}
+
+/* New download button */
+#banner-secondary > .download {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin-bottom: 1em;
+}
+.download-button-content {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5em;
+}
+.download-button-content .download-icon {
+	background: url('i/download.png') no-repeat 0 5px / 100% 100%;
+	width: 35px;
+	height: 35px;
+	display: inline-block;
+	flex-shrink: 0;
+}
+.download-button-content .download-message {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 0.25em;
+}
+.download-button-content .download-message .download-version {
+	font-size: 0.7em;
+}
+.download-options .support-notice {
+	margin: 0.5em 0;
+	color: #ccc;
+}
+@media only screen and (max-width: 767px) {
+	#banner-secondary .download {
+		align-items: center;
+	}
+}
+
+/* Team */
+
+.block-grid,
+#content .block-grid {
+	display: flex;
+	flex-flow: row wrap;
+	margin: 0 -12px;
+}
+.block-grid li,
+#content .block-grid li {
+	display: block;
+	margin: 0;
+	padding: 0 12px 12px;
+}
+.block-grid.two-up li,
+#content .block-grid.two-up li {
+	width: 50%;
+}
+.block-grid.three-up li,
+#content .block-grid.three-up li {
+	width: 33.33%;
+}
+.block-grid.four-up li,
+#content .block-grid.four-up li {
+	width: 25%;
+}
+.block-grid.five-up li,
+#content .block-grid.five-up li {
+	width: 20%;
+}
+@media only screen and (max-width: 767px) {
+	.block-grid.mobile-one-up li { width: 100% !important; }
+	.block-grid.mobile-two-up li { width: 50% !important; }
+	.block-grid.mobile-three-up li { width: 33.33% !important; }
+	.block-grid.mobile-four-up li { width: 25% !important; }
+}
+
+.page-slug-team .block-grid li {
+	text-align: center;
+}
+.page-slug-team .block-grid img {
+	max-width: 100%;
+	margin-bottom: 10px;
+}
+.page-slug-team .block-grid p {
+	text-align: left;
+}
+.page-slug-team #content h2 {
+	color: #333;
+	font-size: 20px;
+	line-height: 20px;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 5px;
+}
+.page-slug-team #content h3 {
+	color: #0769ad;
+	font-style: italic;
+	font-size: 14px;
+	line-height: 18px;
+	text-align: center;
+}
+
+.page-slug-team #content .team-list h3 {
+	min-height: 5px;
+}
+
+.page-slug-team #content .past-team-list h2,
+.page-slug-team #content .past-team-list h3 {
+	text-align: left;
+}
+.page-slug-team #content .past-team-list h3 {
+	min-height: 45px;
+	border-bottom: 1px solid #dbdbdb;
+}
+
+.page-slug-team .center-txt {
+	padding-left: 10%;
+	padding-right: 10%;
+}

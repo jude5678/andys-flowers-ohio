@@ -1,0 +1,21 @@
+# node_modules everywhere in the monorepo
+node_modules/
+**/node_modules/
+my-storefront/node_modules/
+florist-server-side/node_modules/
+
+# zip file backups sitting inside code folders
+*.zip
+**/*.zip
+
+# environment files and local builds
+.env
+.env.*
+**/.env*
+**/build/
+**/dist/
+**/.next/
+
+# OS system files
+.DS_Store
+Thumbs.db
