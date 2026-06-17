@@ -1,15 +1,11 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
-import path from "path"
-import { fileURLToPath } from "url";
+// 1. Swap the static imports for standard functional requires
+const { loadEnv, defineConfig } = require('@medusajs/framework/utils');
+const path = require("path");
+const { fileURLToPath } = require("url");
 
-// define __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+loadEnv(process.env.NODE_ENV || 'development', process.cwd());
 
-
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
-
-export default defineConfig({
+const config = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     http: {
@@ -20,30 +16,32 @@ export default defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
-  
   admin: {
-    vite: () => ({
+    vite: {
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "./src/admin"),
         },
       },
-    }),
+    },
   },
   modules: [
     {
-      resolve: "@medusajs/medusa/payment", 
+      resolve: "@medusajs/medusa/payment",
       options: {
         providers: [
           {
-            resolve: "@medusajs/medusa/payment-stripe", 
-            id: "stripe", 
+            resolve: "@medusajs/medusa/payment-stripe",
+            id: "stripe",
             options: {
-              apiKey: process.env.STRIPE_API_KEY, 
+              apiKey: process.env.STRIPE_API_KEY,
             },
           },
         ],
       },
     },
   ],
-})
+});
+
+// 2. Export via both patterns simultaneously to satisfy all variations of the Medusa loader
+module.exports = config;

@@ -12,9 +12,9 @@
     "headless",
     "medusa"
   ],
-  "type": "module",
   "scripts": {
-    "build": "medusa build",
+    "build": "medusa build && npm run resolve:aliases",
+    "resolve:aliases": "tsc --showConfig -p tsconfig.json > tsconfig.resolved.json && tsc-alias -p tsconfig.resolved.json && rimraf tsconfig.resolved.json",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "start": "medusa start",
     "dev": "medusa develop",
@@ -58,11 +58,5 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "yarn@4.13.0",
-  "ts-node": {
-    "compilerOptions": {
-      "module": "NodeNext",
-      "moduleResolution": "NodeNext"
-    }
-  }
+  "packageManager": "yarn@4.13.0"
 }
