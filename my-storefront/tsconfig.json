@@ -7,9 +7,5 @@
     "allowJs": true,
     "checkJs": false
   },
-  "files": ["medusa-config.ts"],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "files": [],
 }
