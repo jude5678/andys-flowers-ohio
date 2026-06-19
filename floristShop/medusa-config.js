@@ -18,6 +18,7 @@ const config = defineConfig({
   },
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
+    disable: true,
     vite: {
       resolve: {
         alias: {

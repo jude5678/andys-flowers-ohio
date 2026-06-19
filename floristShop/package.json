@@ -13,7 +13,7 @@
     "medusa"
   ],
   "scripts": {
-    "build": "medusa build --no-admin && npm run resolve:aliases",
+    "build": "medusa build && npm run resolve:aliases",
     "resolve:aliases": "tsc --showConfig -p tsconfig.json > tsconfig.resolved.json && tsc-alias -p tsconfig.resolved.json && rimraf tsconfig.resolved.json",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "start": "medusa start",
