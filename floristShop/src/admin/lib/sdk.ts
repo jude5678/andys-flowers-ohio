@@ -6,8 +6,8 @@ import Medusa from "@medusajs/js-sdk"
 // }
 
 export const sdk = new Medusa({
-  baseUrl: import.meta.env.VITE_BACKEND_URL || "/",
+  baseUrl: process.env.VITE_BACKEND_URL || "/",
   // debug: process.env.NODE_ENV === "development",
-  debug: import.meta.env.DEV,
+  debug: process.env.NODE_ENV === "development",
   publishableKey: process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
 })
