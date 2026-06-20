@@ -11,13 +11,14 @@
     "declaration": false,
     "sourceMap": false,
     "inlineSourceMap": true,
-    "outDir": ".medusa/server",
+    "outDir": "./.medusa/server",
     "rootDir": "./",
     "jsx": "react-jsx",
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "checkJs": false,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "allowJs": true
   },
   "ts-node": {
     "swc": true
