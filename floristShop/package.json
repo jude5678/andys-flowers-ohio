@@ -26,6 +26,7 @@
     "@medusajs/admin-sdk": "2.11.3",
     "@medusajs/cli": "2.11.3",
     "@medusajs/framework": "2.11.3",
+    "tsc-alias": "^1.8.10",
     "@medusajs/medusa": "2.11.3",
     "@medusajs/payment": "^2.15.5",
     "@medusajs/payment-stripe": "^2.15.5",
