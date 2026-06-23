@@ -1,7 +1,7 @@
 import Medusa from "@medusajs/js-sdk";
 
 const medusa = new Medusa({ 
-  baseUrl: "http://localhost:9000", 
+  baseUrl: "mutual-crush-shorten.medusajs.app", 
   maxRetries: 3,
   publishableKey: import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY
 });
