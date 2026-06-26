@@ -18,13 +18,13 @@ const config = defineConfig({
   },
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
-    vite: {
+    vite: () => ({
       resolve: {
         alias: {
           "@": path.resolve(__dirname, "./src/admin"),
         },
       },
-    },
+    }),
   },
   modules: [
     {
