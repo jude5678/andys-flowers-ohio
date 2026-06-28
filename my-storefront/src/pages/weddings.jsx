@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from '../lib/sdk.js';
+import { medusa } from "../lib/sdk";
 
 export default function WeddingsPage() {
   // Local state for managing form submission UI feedback
@@ -12,7 +12,7 @@ export default function WeddingsPage() {
     queryKey: ['medusa-collection', 'weddings'],
     queryFn: async () => {
       // Fetches collections matching the handle
-      const response = await sdk.client.fetch(`/store/collections`, {
+      const response = await medusa.client.fetch(`/store/collections`, {
         query: { handle: 'weddings' }
       });
       
@@ -20,7 +20,7 @@ export default function WeddingsPage() {
       if (!targetCollection) throw new Error('Collection not found');
 
       // Fetches products belonging to that specific collection ID
-      const productsResponse = await sdk.client.fetch(`/store/products`, {
+      const productsResponse = await medusa.client.fetch(`/store/products`, {
         query: { collection_id: [targetCollection.id] }
       });
 

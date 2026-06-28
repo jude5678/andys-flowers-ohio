@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from '../lib/sdk.js';
+import { medusa } from "../lib/sdk";
 
 export default function HomeDecorStorefront({ onAddToCart }) {
   const collectionHandle = "home-decor";
@@ -13,7 +13,7 @@ export default function HomeDecorStorefront({ onAddToCart }) {
   } = useQuery({
     queryKey: ['collection', collectionHandle],
     queryFn: async () => {
-      const response = await sdk.store.collection.list({ handle: collectionHandle });
+      const response = await medusa.store.collection.list({ handle: collectionHandle });
       // Return the first collection matching this handle
       return response.collections?.[0] || null;
     }
@@ -29,7 +29,7 @@ export default function HomeDecorStorefront({ onAddToCart }) {
   } = useQuery({
     queryKey: ['collection-products', collectionId],
     queryFn: async () => {
-      const response = await sdk.store.product.list({
+      const response = await medusa.store.product.list({
         collection_id: [collectionId],
         fields: "*variants.calculated_price" // Required for Medusa v2 frontend price rendering
       });

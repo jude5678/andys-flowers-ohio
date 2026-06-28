@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from '../lib/sdk.js'; 
+import { medusa } from "../lib/sdk";
 
 export default function FloralArrangements({ onAddToCart }) {
   // 1. Fetch the collection using the Medusa v2 "collection" namespace with handle "floral-arrangements"
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
-    queryFn: () => sdk.store.collection.list({ 
+    queryFn: () => medusa.store.collection.list({ 
       handle: ['floral-arrangements'] // Wrapped in brackets to make it an array
     }),
   });
@@ -22,7 +22,7 @@ export default function FloralArrangements({ onAddToCart }) {
     error: productError 
   } = useQuery({
     queryKey: ['products', { collectionId }],
-    queryFn: () => sdk.store.product.list({ 
+    queryFn: () => medusa.store.product.list({ 
       collection_id: [collectionId], // Filter to only get items from this collection
       fields: "*variants.calculated_price" 
     }),

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from '../lib/sdk.js';
+import { medusa } from "../lib/sdk";
 
 
 export default function Plants({ onAddToCart }) {
@@ -12,7 +12,7 @@ export default function Plants({ onAddToCart }) {
       error: collectionError 
     } = useQuery({
       queryKey: ['collections', 'plants'],
-      queryFn: () => sdk.store.collection.list({ handle: 'plants' }),
+      queryFn: () => medusa.store.collection.list({ handle: 'plants' }),
     });
   
     // Extract the target collection ID once the first query finishes
@@ -26,7 +26,7 @@ export default function Plants({ onAddToCart }) {
       error: productError 
     } = useQuery({
       queryKey: ['products', { collectionId }],
-      queryFn: () => sdk.store.product.list({ 
+      queryFn: () => medusa.store.product.list({ 
         collection_id: [collectionId], 
         fields: "*variants.calculated_price" // Injects Medusa v2 calculation engine
       }),
