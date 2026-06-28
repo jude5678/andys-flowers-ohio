@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { medusa } from "../lib/sdk";
 
 export default function FloralArrangements({ onAddToCart }) {
-  // 1. Fetch the collection using the Medusa v2 "collection" namespace with handle "floral-arrangements"
+  // 1. Fetch the collection using Medusa v1 SDK namespace
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
-    queryFn: () => medusa.store.collection.list({ 
-      handle: ['floral-arrangements'] // Wrapped in brackets to make it an array
+    queryFn: () => medusa.collections.list({
+      handle: 'floral-arrangements' 
     }),
   });
 
@@ -15,16 +15,10 @@ export default function FloralArrangements({ onAddToCart }) {
   const collectionId = collectionData?.collections?.[0]?.id;
 
   // 2. Fetch products only when the collection ID is successfully retrieved
-  const { 
-    data: productData, 
-    isLoading: isProductLoading, 
-    isError: isProductError, 
-    error: productError 
-  } = useQuery({
+  const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
     queryKey: ['products', { collectionId }],
-    queryFn: () => medusa.store.product.list({ 
+    queryFn: () => medusa.products.list({
       collection_id: [collectionId], // Filter to only get items from this collection
-      fields: "*variants.calculated_price" 
     }),
     enabled: !!collectionId, // Prevents running until collectionId exists
   });
@@ -50,19 +44,19 @@ export default function FloralArrangements({ onAddToCart }) {
           {products.map((product) => {
             const productImg = product.thumbnail || product.images?.[0]?.url;
             
-            // Target the raw calculated price object
-            const calcPrice = product.variants?.[0]?.calculated_price;
+           
+            const basePriceObj = product.variants?.[0]?.prices?.[0];
             let displayPrice = "$0.00";
-            
-            if (calcPrice) {
-              // Fetch the raw amount safely (In Medusa v2, this returns exactly 65)
-              const trueAmount = calcPrice.calculated_amount ?? 0;
-              
-              // Format it cleanly using JavaScript's native Intl formatter (NO division!)
+
+            if (basePriceObj) {
+              // Medusa v1 stores values as integers in cents (e.g. 6500 = $65.00)
+              const rawAmount = basePriceObj.amount ?? 0;
+              const normalizedAmount = rawAmount / 100; // Divide by 100 for proper v1 pricing layout
+
               displayPrice = new Intl.NumberFormat('en-US', {
                 style: 'currency',
-                currency: calcPrice.currency_code?.toUpperCase() || 'USD',
-              }).format(trueAmount);
+                currency: basePriceObj.currency_code?.toUpperCase() || 'USD',
+              }).format(normalizedAmount);
             }
 
             return (

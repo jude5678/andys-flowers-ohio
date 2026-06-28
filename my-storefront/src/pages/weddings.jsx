@@ -7,21 +7,21 @@ export default function WeddingsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStatus, setFormStatus] = useState('');
 
-  // 1. Fetch the collection by handle and include its products
+  // 1. Fetch the collection by handle and include its products using SDK methods
   const { data: collection, isLoading, error } = useQuery({
     queryKey: ['medusa-collection', 'weddings'],
     queryFn: async () => {
-      // Fetches collections matching the handle
-      const response = await medusa.client.fetch(`/store/collections`, {
-        query: { handle: 'weddings' }
+      
+      const collectionsResponse = await medusa.collections.list({
+        handle: 'weddings'
       });
       
-      const targetCollection = response.collections?.[0];
+      const targetCollection = collectionsResponse.collections?.[0];
       if (!targetCollection) throw new Error('Collection not found');
 
-      // Fetches products belonging to that specific collection ID
-      const productsResponse = await medusa.client.fetch(`/store/products`, {
-        query: { collection_id: [targetCollection.id] }
+      
+      const productsResponse = await medusa.products.list({
+        collection_id: [targetCollection.id]
       });
 
       return {
@@ -36,7 +36,6 @@ export default function WeddingsPage() {
     event.preventDefault();
     setIsSubmitting(true);
     setFormStatus('');
-
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
 
@@ -47,7 +46,6 @@ export default function WeddingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: data.name, email: data.email }),
       });
-
       const result = await response.json();
 
       if (response.ok) {
@@ -80,7 +78,7 @@ export default function WeddingsPage() {
           <div className="weddings-gallery">
             {weddingImages.map((url, index) => (
               <img 
-                key={index}
+                key={index} 
                 src={url} 
                 alt={`Wedding floral arrangement ${index + 1}`} 
                 className="weddings-1 row-shadow" 
@@ -98,22 +96,10 @@ export default function WeddingsPage() {
         {/* Integrated form with state-driven elements */}
         <form id="weddingForm" onSubmit={handleSubmit}>
           <label htmlFor="name">Enter your name: </label>
-          <input 
-            type="text" 
-            name="name" 
-            id="name" 
-            required 
-            disabled={isSubmitting} 
-          />
+          <input type="text" name="name" id="name" required disabled={isSubmitting} />
 
           <label htmlFor="email" id="emailLabel">Enter your email: </label>
-          <input 
-            type="email" 
-            name="email" 
-            id="email" 
-            required 
-            disabled={isSubmitting} 
-          />
+          <input type="email" name="email" id="email" required disabled={isSubmitting} />
 
           <button id="submit" type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'SENDING...' : 'SUBMIT'}
@@ -126,3 +112,4 @@ export default function WeddingsPage() {
     </main>
   );
 }
+
