@@ -19,6 +19,10 @@ export default function FloralArrangements({ onAddToCart }) {
     queryKey: ['products', { collectionId }],
     queryFn: () => medusa.products.list({
       collection_id: [collectionId], // Filter to only get items from this collection
+
+      region_id: regionContext?.id || undefined,
+      currency_code: !regionContext?.id ? regionContext?.currency_code : undefined,
+
     }),
     enabled: !!collectionId, // Prevents running until collectionId exists
   });
@@ -41,23 +45,27 @@ export default function FloralArrangements({ onAddToCart }) {
       {/* Grid Product Items container */}
       <div style={{ padding: '2em' }}>
         <ul className="products products-grid">
-          {products.map((product) => {
-            const productImg = product.thumbnail || product.images?.[0]?.url;
+        {products.map((product) => {
+          const productImg = product.thumbnail || product.images?.[0]?.url;
+          
+          // primary variant 
+          const activeVariant = product.variants?.[0];
+          
+          // medusa pricing fields
+          const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? 0;
+          const currencyCode = activeVariant?.calculated_price?.currency_code || 'USD';
+          
+          let displayPrice = "$0.00";
+          
+          // format only if a valid price object was calculated by backend 
+          if (activeVariant?.calculated_price) {
+            const normalizedAmount = rawAmount / 100; // Medusa still uses cents (e.g. 5000 = $50.00)
             
-           
-            const basePriceObj = product.variants?.[0]?.prices?.[0];
-            let displayPrice = "$0.00";
-
-            if (basePriceObj) {
-              // Medusa v1 stores values as integers in cents (e.g. 6500 = $65.00)
-              const rawAmount = basePriceObj.amount ?? 0;
-              const normalizedAmount = rawAmount / 100; // Divide by 100 for proper v1 pricing layout
-
-              displayPrice = new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: basePriceObj.currency_code?.toUpperCase() || 'USD',
-              }).format(normalizedAmount);
-            }
+            displayPrice = new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: currencyCode.toUpperCase(),
+            }).format(normalizedAmount);
+          }
 
             return (
               <li key={product.id} className="product-container" style={{ listStyle: 'none', marginBottom: '20px' }}>

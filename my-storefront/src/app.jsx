@@ -22,6 +22,27 @@ function App() {
     return savedCart ? JSON.parse(savedCart) : [];
   });
   const wrapperRef = useRef(null);
+  const [regionContext, setRegionContext] = useState({ id: null, currency_code: 'usd' });
+
+  useEffect(() => {
+    // check if region context was cached locally
+    const savedRegion = localStorage.getItem('medusa_region');
+    if (savedRegion) {
+      setRegionContext(JSON.parse(savedRegion));
+      return;
+    }
+
+    // Otherwise, fetch the default active store region from the backend
+    medusa.regions.list({ limit: 1 })
+      .then(({ regions }) => {
+        if (regions && regions.length > 0) {
+          const defaultRegion = { id: regions[0].id, currency_code: regions[0].currency_code };
+          setRegionContext(defaultRegion);
+          localStorage.setItem('medusa_region', JSON.stringify(defaultRegion));
+        }
+      })
+      .catch(err => console.error("Could not initialize storefront region context", err));
+  }, []);
 
   const handlePointerEnter = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
@@ -209,38 +230,45 @@ function App() {
             {/* 1. Pass handleAddClick down to the home page route */}
             <Route 
               path="/" 
-              element={<Home onAddToCart={handleAddClick} />} 
+              element={<Home onAddToCart={handleAddClick} 
+              regionContext={regionContext} />} 
             />
             
             {/* 2. Pass handleAddClick down to the floral arrangements route */}
             <Route 
               path="/floralarrangements" 
-              element={<FloralArrangements onAddToCart={handleAddClick} />} 
+              element={<FloralArrangements onAddToCart={handleAddClick} 
+              regionContext={regionContext} />} 
             />
             
             <Route 
               path="/checkout" 
-              element={<Checkout cartItems={cartItems} total={total} />} 
+              element={<Checkout cartItems={cartItems} total={total} 
+              regionContext={regionContext} />} 
             />
 
             <Route 
               path="/aboutus" 
-              element={<AboutUs onAddToCart={handleAddClick} />} 
+              element={<AboutUs onAddToCart={handleAddClick} 
+              regionContext={regionContext} />} 
             />
 
             <Route 
               path="/plants" 
-              element={<Plants onAddToCart={handleAddClick} />} 
+              element={<Plants onAddToCart={handleAddClick} 
+              regionContext={regionContext} />} 
             />
 
             <Route 
               path="/homedecor" 
-              element={<HomeDecor onAddToCart={handleAddClick} />} 
+              element={<HomeDecor onAddToCart={handleAddClick} 
+              regionContext={regionContext} />} 
             />
 
             <Route 
               path="/weddings" 
-              element={<Weddings onAddToCart={handleAddClick} />} 
+              element={<Weddings onAddToCart={handleAddClick} 
+              regionContext={regionContext} />} 
             />
           </Routes>
         </main>
