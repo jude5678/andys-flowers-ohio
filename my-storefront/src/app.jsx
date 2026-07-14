@@ -8,6 +8,7 @@ import Plants from './pages/plants';
 import HomeDecor from './pages/homedecor';
 import Weddings from './pages/weddings';
 import { createPortal } from 'react-dom';
+import { medusa } from "../lib/sdk";
 
 
 function App() {
@@ -25,24 +26,24 @@ function App() {
   const [regionContext, setRegionContext] = useState({ id: null, currency_code: 'usd' });
 
   useEffect(() => {
-    // check if region context was cached locally
+    // check if region was cached locally
     const savedRegion = localStorage.getItem('medusa_region');
     if (savedRegion) {
       setRegionContext(JSON.parse(savedRegion));
       return;
     }
 
-    // Otherwise, fetch the default active store region from the backend
-    medusa.regions.list({ limit: 1 })
-      .then(({ regions }) => {
-        if (regions && regions.length > 0) {
-          const defaultRegion = { id: regions[0].id, currency_code: regions[0].currency_code };
-          setRegionContext(defaultRegion);
-          localStorage.setItem('medusa_region', JSON.stringify(defaultRegion));
-        }
-      })
-      .catch(err => console.error("Could not initialize storefront region context", err));
-  }, []);
+    // if not, fetch default store region from backend
+    medusa.regions.list({ limit: 1 }).then(({ regions: e }) => {
+      if (e && e.length > 0) {
+        let t = { 
+          id: e[0].id, 
+          currency_code: e[0].currency_code 
+        };
+        c(t);
+        localStorage.setItem(`medusa_region`, JSON.stringify(t));
+      }
+    }).catch(e => console.error(`Could not initialize storefront region context`, e));
 
   const handlePointerEnter = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
