@@ -11,7 +11,7 @@ import { createPortal } from 'react-dom';
 import { medusa } from "../lib/sdk";
 
 
-function App() {
+export default function App() {
 
   // content state and cart visibility
   const [isCartVisible, setIsCartVisible] = useState(false);
