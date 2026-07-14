@@ -44,6 +44,7 @@ function App() {
         localStorage.setItem(`medusa_region`, JSON.stringify(t));
       }
     }).catch(e => console.error(`Could not initialize storefront region context`, e));
+  })
 
   const handlePointerEnter = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
@@ -324,5 +325,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
