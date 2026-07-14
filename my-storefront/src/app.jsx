@@ -25,26 +25,30 @@ function App() {
   const wrapperRef = useRef(null);
   const [regionContext, setRegionContext] = useState({ id: null, currency_code: 'usd' });
 
-  useEffect(() => {
-    // check if region was cached locally
-    const savedRegion = localStorage.getItem('medusa_region');
-    if (savedRegion) {
-      setRegionContext(JSON.parse(savedRegion));
-      return;
-    }
-
-    // if not, fetch default store region from backend
-    medusa.regions.list({ limit: 1 }).then(({ regions: e }) => {
-      if (e && e.length > 0) {
-        let t = { 
-          id: e[0].id, 
-          currency_code: e[0].currency_code 
-        };
-        c(t);
-        localStorage.setItem(`medusa_region`, JSON.stringify(t));
-      }
-    }).catch(e => console.error(`Could not initialize storefront region context`, e));
-  })
+  useEffect(() => { 
+    // check if region was cached locally 
+    const savedRegion = localStorage.getItem('medusa_region'); 
+    
+    if (savedRegion) { 
+      setRegionContext(JSON.parse(savedRegion)); // Ensure setRegionContext matches c(t)
+      return; 
+    } 
+  
+    // if not, fetch default store region from backend 
+    medusa.regions.list({ limit: 1 })
+      .then(({ regions: e }) => { 
+        if (e && e.length > 0) { 
+          let t = { 
+            id: e[0].id, 
+            currency_code: e[0].currency_code 
+          }; 
+          // Note: Make sure 'setRegionContext' or 'c' is the correct function name here
+          setRegionContext(t); 
+          localStorage.setItem('medusa_region', JSON.stringify(t)); 
+        } 
+      })
+      .catch(e => console.error('Could not initialize storefront region context', e));
+  }, []);
 
   const handlePointerEnter = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
