@@ -8,7 +8,7 @@ import Plants from './pages/plants';
 import HomeDecor from './pages/homedecor';
 import Weddings from './pages/weddings';
 import { createPortal } from 'react-dom';
-import { medusa } from "../lib/sdk";
+import { medusa } from "./lib/sdk";
 
 
 export default function App() {
