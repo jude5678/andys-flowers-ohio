@@ -35,19 +35,20 @@ export default function App() {
     } 
   
     // if not, fetch default store region from backend 
-    medusa.regions.list({ limit: 1 })
-      .then(({ regions: e }) => { 
-        if (e && e.length > 0) { 
-          let t = { 
-            id: e[0].id, 
-            currency_code: e[0].currency_code 
+    medusa.regions.list({ limit: 1 }) 
+      .then(({ regions: fetchedRegions }) => { 
+        if (fetchedRegions && fetchedRegions.length > 0) { 
+          let defaultRegion = { 
+            id: fetchedRegions[0].id, 
+            currency_code: fetchedRegions[0].currency_code 
           }; 
-          // Note: Make sure 'setRegionContext' or 'c' is the correct function name here
-          setRegionContext(t); 
-          localStorage.setItem('medusa_region', JSON.stringify(t)); 
+          setRegionContext(defaultRegion); 
+          localStorage.setItem('medusa_region', JSON.stringify(defaultRegion)); 
         } 
-      })
-      .catch(e => console.error('Could not initialize storefront region context', e));
+      }) 
+      .catch(err => {
+        console.error('Could not initialize storefront region context', err);
+      }); 
   }, []);
 
   const handlePointerEnter = () => {
