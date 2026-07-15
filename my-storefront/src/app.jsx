@@ -24,16 +24,18 @@ export default function App() {
   });
   const wrapperRef = useRef(null);
   const [regionContext, setRegionContext] = useState({ id: null, currency_code: 'usd' });
+  const [isRegionLoading, setIsRegionLoading] = useState(true); // <-- Added for Step 3
 
+  // loading states
   useEffect(() => { 
     // check if region was cached locally 
     const savedRegion = localStorage.getItem('medusa_region'); 
-    
     if (savedRegion) { 
-      setRegionContext(JSON.parse(savedRegion)); // Ensure setRegionContext matches c(t)
+      setRegionContext(JSON.parse(savedRegion)); 
+      setIsRegionLoading(false); // <-- Stop loading because we found a cached region
       return; 
     } 
-  
+    
     // if not, fetch default store region from backend 
     medusa.regions.list({ limit: 1 }) 
       .then(({ regions: fetchedRegions }) => { 
@@ -46,10 +48,15 @@ export default function App() {
           localStorage.setItem('medusa_region', JSON.stringify(defaultRegion)); 
         } 
       }) 
-      .catch(err => {
-        console.error('Could not initialize storefront region context', err);
-      }); 
+      .catch(err => { 
+        console.error('Could not initialize storefront region context', err); 
+      })
+      .finally(() => {
+        setIsRegionLoading(false); // <-- stop loading whether API succeeded or failed
+      });
   }, []);
+
+  
 
   const handlePointerEnter = () => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
@@ -66,9 +73,29 @@ export default function App() {
     }
     setIsCartVisible(true);
   };
+
+  useEffect(() => {
+    // Stop if region isn't loaded yet to avoid $0.00 pricing issues
+    if (!regionContext || !regionContext.id) return;
+
+    setIsProductsLoading(true);
+
+    // Pass the region_id so Medusa calculates correct taxes and local prices
+    medusa.products.list({
+      region_id: regionContext.id,
+    })
+    .then(({ products: fetchedProducts }) => {
+      setProducts(fetchedProducts);
+    })
+    .catch(err => {
+      console.error("Failed to fetch products:", err);
+    })
+    .finally(() => {
+      setIsProductsLoading(false);
+    });
+  }, [regionContext]); 
   
   const handlePointerLeave = () => {
-    // Give the user a 200ms window to cross any empty space safely
     closeTimeoutRef.current = setTimeout(() => {
       setIsCartVisible(false);
     }, 200);
