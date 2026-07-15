@@ -58,24 +58,6 @@ export default function App() {
       });
   }, []);
 
-  
-
-  const handlePointerEnter = () => {
-    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
-  
-    // Calculate exactly where the subtotal button sits on the screen
-    if (subtotalRef.current) {
-      const rect = subtotalRef.current.getBoundingClientRect();
-      setDropdownCoords({
-        // Place it exactly at the bottom edge of the subtotal button
-        top: rect.bottom + window.scrollY,
-        // Align it to the right edge of the subtotal button
-        right: window.innerWidth - rect.right - window.scrollX
-      });
-    }
-    setIsCartVisible(true);
-  };
-
   useEffect(() => {
     // Stop if region isn't loaded yet to avoid $0.00 pricing issues
     if (!regionContext || !regionContext.id) return;
@@ -96,6 +78,24 @@ export default function App() {
       setIsProductsLoading(false);
     });
   }, [regionContext]); 
+  
+
+  const handlePointerEnter = () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+  
+    // Calculate exactly where the subtotal button sits on the screen
+    if (subtotalRef.current) {
+      const rect = subtotalRef.current.getBoundingClientRect();
+      setDropdownCoords({
+        // Place it exactly at the bottom edge of the subtotal button
+        top: rect.bottom + window.scrollY,
+        // Align it to the right edge of the subtotal button
+        right: window.innerWidth - rect.right - window.scrollX
+      });
+    }
+    setIsCartVisible(true);
+  };
+
   
   const handlePointerLeave = () => {
     closeTimeoutRef.current = setTimeout(() => {
