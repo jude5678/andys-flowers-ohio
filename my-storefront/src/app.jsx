@@ -24,7 +24,8 @@ export default function App() {
   });
   const wrapperRef = useRef(null);
   const [regionContext, setRegionContext] = useState({ id: null, currency_code: 'usd' });
-  const [isRegionLoading, setIsRegionLoading] = useState(true); // <-- Added for Step 3
+  const [isRegionLoading, setIsRegionLoading] = useState(true);
+  const [isProductsLoading, setIsProductsLoading] = useState(false); 
 
   // loading states
   useEffect(() => { 
