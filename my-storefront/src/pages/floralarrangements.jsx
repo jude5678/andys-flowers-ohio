@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { medusa } from "../lib/sdk";
 
-export default function FloralArrangements({ onAddToCart }) {
+export default function FloralArrangements({ onAddToCart, regionContext }) {
   // 1. Fetch the collection using Medusa v1 SDK namespace
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
@@ -16,7 +16,7 @@ export default function FloralArrangements({ onAddToCart }) {
 
   // 2. Fetch products only when the collection ID is successfully retrieved
   const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
-    queryKey: ['products', { collectionId }],
+    queryKey: ['products', { collectionId, regionId: regionContext?.id, currency: regionContext?.currency_code }],
     queryFn: () => medusa.products.list({
       collection_id: [collectionId], // Filter to only get items from this collection
 
