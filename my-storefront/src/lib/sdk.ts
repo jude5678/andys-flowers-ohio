@@ -9,4 +9,10 @@ export const sdk = new Medusa({
   publishableApiKey: publishableKey
 })
 
+export const medusa = new Medusa({
+  baseUrl: backendUrl,
+  maxRetries: 3,
+  publishableApiKey: publishableKey
+})
+
 export default sdk;
