@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import sdk from "../lib/sdk"; // Note: Medusa v2 uses the renamed 'sdk' import conventionally
+import { sdk } from "../lib/sdk"; // Note: Medusa v2 uses the renamed 'sdk' import conventionally
 import { useRegion } from "@/providers/region"; 
 
 export default function FloralArrangements({ onAddToCart }) {
