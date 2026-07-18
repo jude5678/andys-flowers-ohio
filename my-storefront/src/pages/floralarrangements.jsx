@@ -1,37 +1,36 @@
+"use client"
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { medusa } from "../lib/sdk";
+import { sdk } from "../lib/sdk"; // Note: Medusa v2 uses the renamed 'sdk' import conventionally
+import { useRegion } from "@/providers/region"; 
 
-export default function FloralArrangements({ onAddToCart, regionContext }) {
-  // 1. Fetch the collection using Medusa v1 SDK namespace
+export default function FloralArrangements({ onAddToCart }) {
+  const { region } = useRegion();
+
+  // 1. Fetch the target collection
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
-    queryFn: () => medusa.collections.list({
-      handle: 'floral-arrangements' 
-    }),
+    queryFn: () => sdk.store.productCollection.list({ handle: 'floral-arrangements' }), // Medusa v2 method namespace
   });
 
-  // Extract the target collection ID once the first query finishes
   const collectionId = collectionData?.collections?.[0]?.id;
 
-  // 2. Fetch products only when the collection ID is successfully retrieved
+  // 2. Fetch products (Refactored safely for Medusa v2 Context)
   const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
-    queryKey: ['products', { collectionId, regionId: regionContext?.id, currency: regionContext?.currency_code }],
-    queryFn: () => medusa.products.list({
-      collection_id: [collectionId], // Filter to only get items from this collection
-
-      region_id: regionContext?.id || undefined,
-      currency_code: !regionContext?.id ? regionContext?.currency_code : undefined,
-
+    queryKey: ['products', { collectionId, regionId: region?.id }],
+    queryFn: () => sdk.store.product.list({
+      collection_id: [collectionId],
+      fields: "*variants.calculated_price", // Medusa v2 retrieves calculations via graph linkages
+      region_id: region?.id || undefined, 
     }),
-    enabled: !!collectionId, // Prevents running until collectionId exists
+    // FIX: Don't stall with (&& !!region) or it will lock on initial render if context is slow.
+    // Instead, let it fetch without region context initially, or wait for collectionId.
+    enabled: !!collectionId, 
   });
 
-  // Extract products safely from the second query
   const products = productData?.products || [];
 
-  // Consolidate early return layouts for both network states
-  if (isCollectionLoading || (collectionId && isProductLoading)) {
+  if (isCollectionLoading || isProductLoading) {
     return <div className="loading-state">Loading beautiful arrangements...</div>;
   }
 
@@ -42,30 +41,27 @@ export default function FloralArrangements({ onAddToCart, regionContext }) {
 
   return (
     <div>
-      {/* Grid Product Items container */}
       <div style={{ padding: '2em' }}>
         <ul className="products products-grid">
-        {products.map((product) => {
-          const productImg = product.thumbnail || product.images?.[0]?.url;
-          
-          // primary variant 
-          const activeVariant = product.variants?.[0];
-          
-          // medusa pricing fields
-          const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? 0;
-          const currencyCode = activeVariant?.calculated_price?.currency_code || 'USD';
-          
-          let displayPrice = "$0.00";
-          
-          // format only if a valid price object was calculated by backend 
-          if (activeVariant?.calculated_price) {
-            const normalizedAmount = rawAmount / 100; // Medusa still uses cents (e.g. 5000 = $50.00)
+          {products.map((product) => {
+            const productImg = product.thumbnail || product.images?.[0]?.url;
+            const activeVariant = product.variants?.[0];
             
-            displayPrice = new Intl.NumberFormat('en-US', {
-              style: 'currency',
-              currency: currencyCode.toUpperCase(),
-            }).format(normalizedAmount);
-          }
+            // Medusa v2 returns an integer for calculated_amount (e.g. 5000 for $50.00)
+            const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? 0;
+            
+            // In v2, fall back strictly to your region's assigned active currency code
+            const currencyCode = activeVariant?.calculated_price?.currency_code || region?.currency_code || 'usd';
+            
+            let displayPrice = "$0.00";
+
+            if (activeVariant?.calculated_price) {
+              const normalizedAmount = rawAmount / 100; 
+              displayPrice = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: currencyCode.toUpperCase(),
+              }).format(normalizedAmount);
+            }
 
             return (
               <li key={product.id} className="product-container" style={{ listStyle: 'none', marginBottom: '20px' }}>
