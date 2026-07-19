@@ -1,24 +1,23 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from "../lib/sdk"; // Named import from your fixed sdk.ts file
+import { sdk } from "../lib/sdk"; // Named import from your specific client instance
 
 export default function FloralArrangements({ onAddToCart, regionContext }) {
   
-  // 1. Fetch the collection using Medusa v2 SDK namespaces
+  // 1. Fetch the collection using Medusa v1 Client syntax
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
-    queryFn: () => sdk.store.collection.list({ handle: 'floral-arrangements' }), // FIX: changed from productCollection to collection
+    queryFn: () => sdk.collections.list({ handle: 'floral-arrangements' }), 
   });
 
   // Extract the target collection ID
   const collectionId = collectionData?.collections?.[0]?.id;
 
-  // 2. Fetch products using the simple regionContext prop
+  // 2. Fetch products safely mapping the simple regionContext prop
   const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
     queryKey: ['products', { collectionId, regionId: regionContext?.id }],
-    queryFn: () => sdk.store.product.list({
-      collection_id: collectionId, // FIX: Medusa v2 takes a simple string filter here instead of an array
-      fields: "*variants.calculated_price",
+    queryFn: () => sdk.products.list({
+      collection_id: [collectionId], // v1 Client requires an array wrapper for listing filters
       region_id: regionContext?.id || undefined, 
     }),
     enabled: !!collectionId, 
@@ -41,16 +40,18 @@ export default function FloralArrangements({ onAddToCart, regionContext }) {
         <ul className="products products-grid">
           {products.map((product) => {
             const productImg = product.thumbnail || product.images?.[0]?.url;
+            
+            // Map the variant array safely
             const activeVariant = product.variants?.[0];
             
-            // Medusa v2 pricing properties
-            const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? 0;
+            // Check pricing fields
+            const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? activeVariant?.prices?.[0]?.amount ?? 0;
             const currencyCode = activeVariant?.calculated_price?.currency_code || regionContext?.currency_code || 'USD';
             
             let displayPrice = "$0.00";
 
-            if (activeVariant?.calculated_price) {
-              const normalizedAmount = rawAmount / 100; // Medusa returns minor units (cents)
+            if (rawAmount > 0) {
+              const normalizedAmount = rawAmount / 100; // Minor units (cents)
               displayPrice = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: currencyCode.toUpperCase(),
