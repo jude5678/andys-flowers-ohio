@@ -1,23 +1,23 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from "../lib/sdk"; // Named import from your specific client instance
+import { sdk } from "../lib/sdk"; 
 
 export default function FloralArrangements({ onAddToCart, regionContext }) {
   
-  // 1. Fetch the collection using Medusa v1 Client syntax
+  // fetch the product collection
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
     queryFn: () => sdk.collections.list({ handle: 'floral-arrangements' }), 
   });
 
-  // Extract the target collection ID
+  // get the collection ID
   const collectionId = collectionData?.collections?.[0]?.id;
 
-  // 2. Fetch products safely mapping the simple regionContext prop
+  // 2. fetch products using regionContext
   const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
     queryKey: ['products', { collectionId, regionId: regionContext?.id }],
     queryFn: () => sdk.products.list({
-      collection_id: [collectionId], // v1 Client requires an array wrapper for listing filters
+      collection_id: [collectionId], 
       region_id: regionContext?.id || undefined, 
     }),
     enabled: !!collectionId, 
@@ -41,10 +41,10 @@ export default function FloralArrangements({ onAddToCart, regionContext }) {
           {products.map((product) => {
             const productImg = product.thumbnail || product.images?.[0]?.url;
             
-            // Map the variant array safely
+            // prices array
             const activeVariant = product.variants?.[0];
             
-            // Check pricing fields
+            // check pricing data
             const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? activeVariant?.prices?.[0]?.amount ?? 0;
             const currencyCode = activeVariant?.calculated_price?.currency_code || regionContext?.currency_code || 'USD';
             
