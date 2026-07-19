@@ -51,7 +51,7 @@ export default function FloralArrangements({ onAddToCart, regionContext }) {
             let displayPrice = "$0.00";
 
             if (rawAmount > 0) {
-              const normalizedAmount = rawAmount / 100; // Minor units (cents)
+              const normalizedAmount = rawAmount;
               displayPrice = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: currencyCode.toUpperCase(),
