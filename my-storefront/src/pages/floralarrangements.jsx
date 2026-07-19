@@ -1,13 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from "../lib/sdk"; 
+import { sdk } from "../lib/sdk"; // Named import from your fixed sdk.ts file
 
 export default function FloralArrangements({ onAddToCart, regionContext }) {
   
-  // 1. Fetch the collection using Medusa v2 SDK namespace
+  // 1. Fetch the collection using Medusa v2 SDK namespaces
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
-    queryFn: () => sdk.store.productCollection.list({ handle: 'floral-arrangements' }),
+    queryFn: () => sdk.store.collection.list({ handle: 'floral-arrangements' }), // FIX: changed from productCollection to collection
   });
 
   // Extract the target collection ID
@@ -17,9 +17,9 @@ export default function FloralArrangements({ onAddToCart, regionContext }) {
   const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
     queryKey: ['products', { collectionId, regionId: regionContext?.id }],
     queryFn: () => sdk.store.product.list({
-      collection_id: [collectionId],
+      collection_id: collectionId, // FIX: Medusa v2 takes a simple string filter here instead of an array
       fields: "*variants.calculated_price",
-      region_id: regionContext?.id || undefined, // Simple prop mapping
+      region_id: regionContext?.id || undefined, 
     }),
     enabled: !!collectionId, 
   });
@@ -43,7 +43,7 @@ export default function FloralArrangements({ onAddToCart, regionContext }) {
             const productImg = product.thumbnail || product.images?.[0]?.url;
             const activeVariant = product.variants?.[0];
             
-            // Medusa v2 calculation parameters
+            // Medusa v2 pricing properties
             const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? 0;
             const currencyCode = activeVariant?.calculated_price?.currency_code || regionContext?.currency_code || 'USD';
             
