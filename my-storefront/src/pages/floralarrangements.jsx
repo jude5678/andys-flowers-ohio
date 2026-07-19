@@ -1,30 +1,26 @@
-"use client"
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { sdk } from "../lib/sdk"; // Note: Medusa v2 uses the renamed 'sdk' import conventionally
-import { useRegion } from "@/providers/region"; 
+import { sdk } from "../lib/sdk"; 
 
-export default function FloralArrangements({ onAddToCart }) {
-  const { region } = useRegion();
-
-  // 1. Fetch the target collection
+export default function FloralArrangements({ onAddToCart, regionContext }) {
+  
+  // 1. Fetch the collection using Medusa v2 SDK namespace
   const { data: collectionData, isLoading: isCollectionLoading, isError: isCollectionError, error: collectionError } = useQuery({
     queryKey: ['collections', 'floral-arrangements'],
-    queryFn: () => sdk.store.productCollection.list({ handle: 'floral-arrangements' }), // Medusa v2 method namespace
+    queryFn: () => sdk.store.productCollection.list({ handle: 'floral-arrangements' }),
   });
 
+  // Extract the target collection ID
   const collectionId = collectionData?.collections?.[0]?.id;
 
-  // 2. Fetch products (Refactored safely for Medusa v2 Context)
+  // 2. Fetch products using the simple regionContext prop
   const { data: productData, isLoading: isProductLoading, isError: isProductError, error: productError } = useQuery({
-    queryKey: ['products', { collectionId, regionId: region?.id }],
+    queryKey: ['products', { collectionId, regionId: regionContext?.id }],
     queryFn: () => sdk.store.product.list({
       collection_id: [collectionId],
-      fields: "*variants.calculated_price", // Medusa v2 retrieves calculations via graph linkages
-      region_id: region?.id || undefined, 
+      fields: "*variants.calculated_price",
+      region_id: regionContext?.id || undefined, // Simple prop mapping
     }),
-    // FIX: Don't stall with (&& !!region) or it will lock on initial render if context is slow.
-    // Instead, let it fetch without region context initially, or wait for collectionId.
     enabled: !!collectionId, 
   });
 
@@ -47,16 +43,14 @@ export default function FloralArrangements({ onAddToCart }) {
             const productImg = product.thumbnail || product.images?.[0]?.url;
             const activeVariant = product.variants?.[0];
             
-            // Medusa v2 returns an integer for calculated_amount (e.g. 5000 for $50.00)
+            // Medusa v2 calculation parameters
             const rawAmount = activeVariant?.calculated_price?.calculated_amount ?? 0;
-            
-            // In v2, fall back strictly to your region's assigned active currency code
-            const currencyCode = activeVariant?.calculated_price?.currency_code || region?.currency_code || 'usd';
+            const currencyCode = activeVariant?.calculated_price?.currency_code || regionContext?.currency_code || 'USD';
             
             let displayPrice = "$0.00";
 
             if (activeVariant?.calculated_price) {
-              const normalizedAmount = rawAmount / 100; 
+              const normalizedAmount = rawAmount / 100; // Medusa returns minor units (cents)
               displayPrice = new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: currencyCode.toUpperCase(),
