@@ -2309,7 +2309,7 @@ html, body {
 				display: block;
 			}
 
-			.box.features .features-row section {
+			.box.features {
 				float: left;
 				padding: 3em;
 				width: 50%;
@@ -4215,6 +4215,7 @@ span.material-symbols-outlined {
 	@media (max-width: 768px) {
 		#services .features-row section {
 			width: 40%;
+			margin: 0 auto;
 		}
 
 		#banner-two {
