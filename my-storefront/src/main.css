@@ -4213,6 +4213,10 @@ span.material-symbols-outlined {
 	}
 
 	@media (max-width: 768px) {
+		.features-row section {
+			width: 40%;
+		}
+
 		#banner-two {
 		  padding-top: 1.2em !important;   /* Slightly tighter on mobile viewports */
 		  padding-bottom: 1.2em !important;
