@@ -4213,7 +4213,7 @@ span.material-symbols-outlined {
 	}
 
 	@media (max-width: 768px) {
-		.features-row section {
+		#services .features-row section {
 			width: 40%;
 		}
 
@@ -4707,7 +4707,7 @@ span.material-symbols-outlined {
 					padding: 0;
 				}
 
-					.box.features .features-row section {
+					.box.features {
 						border: 0;
 						border-top: solid 1px #e5e5e5 !important;
 						float: none;
