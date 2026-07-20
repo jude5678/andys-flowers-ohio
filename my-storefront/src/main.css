@@ -4216,6 +4216,14 @@ span.material-symbols-outlined {
 		#services .features-row section {
 			width: 40%;
 			margin: 0 auto;
+			height: 100%;
+			display: inline-block;
+			margin-left: 1em;
+			margin-right: 1em;
+		}
+		#services .box.features .features-row section:nth-child(2n):before {
+			margin-left: 0;
+			width: 0;
 		}
 
 		#banner-two {
