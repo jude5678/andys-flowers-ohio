@@ -4221,9 +4221,9 @@ span.material-symbols-outlined {
 			margin-left: 1em;
 			margin-right: 1em;
 		}
-		#services .box.features .features-row section:nth-child(2n):before {
+		.box.features .features-row section:nth-child(2n):before {
 			margin-left: 0;
-			width: 0;
+			width: 0 !important;
 		}
 
 		#banner-two {
