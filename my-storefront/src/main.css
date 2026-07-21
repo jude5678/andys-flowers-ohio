@@ -4215,7 +4215,7 @@ span.material-symbols-outlined {
 	@media (max-width: 768px) {
 		#services .features-row section {
 			width: 40%;
-			margin: 0 auto;
+			margin: 0 auto !important;
 			height: 100%;
 			display: inline-block;
 			margin-left: 1em;
@@ -4224,6 +4224,10 @@ span.material-symbols-outlined {
 		.box.features .features-row section:nth-child(2n):before {
 			margin-left: 0;
 			width: 0 !important;
+		}
+		.row .col-6.col-12-narrower {
+			padding: 0;
+			display: inline-block;
 		}
 
 		#banner-two {
@@ -4863,7 +4867,7 @@ span.material-symbols-outlined {
 				padding: 3em 1em !important;
 			}
 
-				.box.features .features-row section {
+				.box.features {
 					margin: 3em 0 0 0 !important;
 					padding: 3em 0 0 0 !important;
 				}
