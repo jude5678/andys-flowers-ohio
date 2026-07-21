@@ -4215,12 +4215,18 @@ span.material-symbols-outlined {
 	@media (max-width: 768px) {
 		#services .features-row section {
 			width: 40%;
-			margin: 0 auto !important;
+			margin: auto !important;
 			height: 100%;
 			display: inline-block;
 			margin-left: 1em;
 			margin-right: 1em;
+			vertical-align: middle;
 		}
+		.box.features {
+			margin: 2em 0;
+			padding: 2em 0;
+		}
+
 		.box.features .features-row section:nth-child(2n):before {
 			margin-left: 0;
 			width: 0 !important;
@@ -4228,6 +4234,7 @@ span.material-symbols-outlined {
 		.row .col-6.col-12-narrower {
 			padding: 0;
 			display: inline-block;
+			width: 40%;
 		}
 
 		#banner-two {
@@ -4724,8 +4731,6 @@ span.material-symbols-outlined {
 						border: 0;
 						border-top: solid 1px #e5e5e5 !important;
 						float: none;
-						margin: 2em 0 0 0 !important;
-						padding: 2em 0 0 0 !important;
 						width: 100%;
 					}
 
@@ -4866,11 +4871,6 @@ span.material-symbols-outlined {
 				margin: 1em 0 0 0;
 				padding: 3em 1em !important;
 			}
-
-				.box.features {
-					margin: 3em 0 0 0 !important;
-					padding: 3em 0 0 0 !important;
-				}
 
 				.box.special.features div.features-row + div.features-row section {
 					margin-bottom: 4em !important;
