@@ -4234,7 +4234,8 @@ span.material-symbols-outlined {
 		.row .col-6.col-12-narrower {
 			padding: 0;
 			display: inline-block;
-			width: 40%;
+			width: 45%;
+			margin: 0 auto;
 		}
 
 		#banner-two {
