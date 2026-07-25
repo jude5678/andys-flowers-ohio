@@ -3213,6 +3213,7 @@ html, body {
 		line-height: 1 !important;          
 		text-align: center !important;
 		display: inline-block !important;
+		font-weight: 900 !important;
 	  }
 	  
 	  #banner-two h2,
@@ -3416,10 +3417,10 @@ html, body {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
-	gap: 2em; /* Increased gap for better spacing */
+	gap: 2em; 
 	width: 100%;
 	max-width: 1200px;
-	margin: 0 auto; /* Centers the whole grid on the page */
+	margin: 0 auto; 
 	padding: 0;
   }
   
@@ -4140,11 +4141,7 @@ span.material-symbols-outlined {
 	@media screen and (max-width: 645px) {
 		/* Home Decor */
 
-		.decor {
-
-			width: 60%;
-
-		}
+		
 
 		.top-row2 {
 			padding-left: 12em;
@@ -4247,10 +4244,6 @@ span.material-symbols-outlined {
 		#banner-two h2 {
 		  font-size: 1rem !important;
 		  font-weight: 900;
-		  text-shadow:
-		  1px 1px 2px black,
-		  0 0 1em blue,
-		  0 0 0.2em blue !important;
 		}
 		#header .cart-hover-wrapper {
 		  right: 1em !important;
@@ -4263,6 +4256,27 @@ span.material-symbols-outlined {
 			height: 15px;
 			margin-right: -1em;
 		}
+
+		.decor-container {
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 2em;
+		}
+
+		.decor-container .product-card {
+			width: 30%;
+		}
+
+		.plant-container {
+			justify-content: center;
+			flex-wrap: wrap;
+			gap: 2em;
+		}
+
+		.plant-container .product-container {
+			width: 30%;
+		}
+
 		#cta .about-us {
 			height: 5em;
 		}
