@@ -4232,10 +4232,14 @@ span.material-symbols-outlined {
 			width: 0 !important;
 		}
 		.row .col-6.col-12-narrower {
-			padding: 0;
-			display: inline-block;
+			/* padding: 0;
+			display: inline-block; */
 			width: 45%;
-			margin: 0 auto;
+			/* margin: 0 auto; */
+		}
+
+		.home-container .row {
+			justify-content: center;
 		}
 
 		#banner-two {
