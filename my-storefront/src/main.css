@@ -4213,6 +4213,7 @@ span.material-symbols-outlined {
 	}
 
 	@media (max-width: 768px) {
+
 		#services .features-row section {
 			width: 40%;
 			margin: auto !important;
@@ -4232,10 +4233,7 @@ span.material-symbols-outlined {
 			width: 0 !important;
 		}
 		.row .col-6.col-12-narrower {
-			/* padding: 0;
-			display: inline-block; */
 			width: 45%;
-			/* margin: 0 auto; */
 		}
 
 		.home-container .row {
@@ -4248,6 +4246,11 @@ span.material-symbols-outlined {
 		}
 		#banner-two h2 {
 		  font-size: 1rem !important;
+		  font-weight: 900;
+		  text-shadow:
+		  1px 1px 2px black,
+		  0 0 1em blue,
+		  0 0 0.2em blue !important;
 		}
 		#header .cart-hover-wrapper {
 		  right: 1em !important;

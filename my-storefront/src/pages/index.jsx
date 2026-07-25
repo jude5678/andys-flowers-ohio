@@ -68,7 +68,7 @@ export default function Home() {
           <section className="box special row-shadow">
             <span className="image featured">
               {/* 3. Reference the imported variable name here */}
-              <img src={mixedFlowersImg} alt="bouquet of mixed flowers" className="box-img" />
+              <img src={mixedFlowersImg} alt="bouquet of mixed flowers" className="box-img row-shadow" />
             </span>
             <h3>Floral Arrangements</h3>
             <p>Check out our assortments of mixed flowers, roses and more!</p>
@@ -84,7 +84,7 @@ export default function Home() {
           <section className="box special row-shadow">
             <span className="image featured">
               {/* 4. Reference the imported variable name here */}
-              <img src={weddingImg} alt="woman in wedding dress holding a bouqet of flowers" />
+              <img src={weddingImg} alt="woman in wedding dress holding a bouqet of flowers" className='row-shadow'/>
             </span>
             <h3>Weddings</h3>
             <p>We would be more than honored to have a consultation with you for your special day.</p>
