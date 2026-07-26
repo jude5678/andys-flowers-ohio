@@ -1,4 +1,4 @@
-import 'dotenv/config'; // Import as module
+import 'dotenv/config'; 
 console.log('Environment loaded, STRIPE_SECRET_KEY:', process.env.STRIPE_SECRET_KEY);
 import Stripe from 'stripe'
 import express from 'express'
@@ -275,7 +275,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const fromEmail = process.env.EMAIL_FROM || "Andy <contact@andysflowersohio.com>";
 
 // email endpoint
-app.post('/api/send-email', async (req, res) => {
+app.post('/weddings', async (req, res) => {
   try {
     const { name, email } = req.body;
 
@@ -287,7 +287,7 @@ app.post('/api/send-email', async (req, res) => {
     // Trigger the email send via Resend
     const { data, error } = await resend.emails.send({
       from: fromEmail,
-      to: email, // Dynamic destination from user input
+      to: email, 
       subject: `Wedding Consultation Request - ${name}`,
       html: `<h1>Hi ${name}!</h1><p>Thank you for reaching out. We will get in touch with you soon to set up your wedding consultation.</p>`,
       text: `Hi ${name}! Thank you for reaching out. We will get in touch with you soon to set up your wedding consultation.`
@@ -307,9 +307,6 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
 
 //serve files for all paths
