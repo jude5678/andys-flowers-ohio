@@ -31,7 +31,7 @@ export default function WeddingsPage() {
     }
   });
 
-  // Integrated form submission handler connecting to the Express proxy route
+  // form submission tied to express route
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -40,8 +40,7 @@ export default function WeddingsPage() {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      // Communicates directly through the Vite/Webpack backend proxy
-      const response = await fetch('/api/send-email', {
+      const response = await fetch('/weddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: data.name, email: data.email }),
@@ -50,7 +49,7 @@ export default function WeddingsPage() {
 
       if (response.ok) {
         setFormStatus('Success! We will contact you soon.');
-        event.target.reset(); // Safely clears the input fields
+        event.target.reset(); // clears input fields
       } else {
         setFormStatus(`Error: ${result.error || 'Failed to send email'}`);
       }
@@ -93,7 +92,7 @@ export default function WeddingsPage() {
           At Aurora Flower Shoppe, we know how hectic it can be to plan a perfect wedding. We strive to make the process that much more seamless by designing floral arrangements that will compliment your special day. We offer consultations and custom pricing.
         </p>
 
-        {/* Integrated form with state-driven elements */}
+        
         <form id="weddingForm" onSubmit={handleSubmit}>
           <label htmlFor="name">Enter your name: </label>
           <input type="text" name="name" id="name" required disabled={isSubmitting} />
@@ -106,7 +105,7 @@ export default function WeddingsPage() {
           </button>
         </form>
 
-        {/* Visual feedback notice for submission status */}
+        
         {formStatus && <p className="form-feedback">{formStatus}</p>}
       </section>
     </main>
