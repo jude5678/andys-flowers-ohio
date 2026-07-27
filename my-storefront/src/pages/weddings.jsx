@@ -40,7 +40,7 @@ export default function WeddingsPage() {
     const data = Object.fromEntries(formData.entries());
 
     try {
-      const response = await fetch('/weddings', {
+      const response = await fetch('mutual-crush-shorten.medusajs.app/weddings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: data.name, email: data.email }),
