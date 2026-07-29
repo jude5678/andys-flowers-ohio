@@ -32,26 +32,57 @@ export default function WeddingsPage() {
   });
 
   // form submission tied to express route
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   setIsSubmitting(true);
+  //   setFormStatus('');
+  //   const formData = new FormData(event.target);
+  //   const data = Object.fromEntries(formData.entries());
+
+  //   try {
+  //     const response = await fetch('/weddings', {
+  //       netlify: "true",
+  //       name: 'weddings',
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ name: data.name, email: data.email }),
+  //     });
+  //     const result = await response.json();
+
+  //     if (response.ok) {
+  //       setFormStatus('Success! We will contact you soon.');
+  //       event.target.reset(); // clears input fields
+  //     } else {
+  //       setFormStatus(`Error: ${result.error || 'Failed to send email'}`);
+  //     }
+  //   } catch (err) {
+  //     setFormStatus('An error occurred. Please check your connection and try again.');
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     setFormStatus('');
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
-
+  
     try {
-      const response = await fetch('mutual-crush-shorten.medusajs.app/weddings', {
+      const response = await fetch('/.netlify/functions/triggerWeddingEmail', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: data.name, email: data.email }),
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+        }),
       });
-      const result = await response.json();
-
+  
       if (response.ok) {
         setFormStatus('Success! We will contact you soon.');
-        event.target.reset(); // clears input fields
+        event.target.reset();
       } else {
-        setFormStatus(`Error: ${result.error || 'Failed to send email'}`);
+        setFormStatus('Error: Failed to send email');
       }
     } catch (err) {
       setFormStatus('An error occurred. Please check your connection and try again.');
@@ -60,7 +91,7 @@ export default function WeddingsPage() {
     }
   };
 
-  // 2. Extract all available product images from the collection
+  // grab wedding image from medusa collection
   const weddingImages = collection?.products?.flatMap(product => 
     product.images?.map(img => img.url) || []
   ) || [];
@@ -68,11 +99,11 @@ export default function WeddingsPage() {
   return (
     <main id="weddings">
       <section>
-        {/* 3. Handle loading and error states gracefully */}
+        {/* loading and error states */}
         {isLoading && <p>Loading wedding gallery...</p>}
         {error && <p>Error loading images: {error.message}</p>}
 
-        {/* 4. Display fetched images, falling back to a placeholder if empty */}
+        {/* show image */}
         {weddingImages.length > 0 ? (
           <div className="weddings-gallery">
             {weddingImages.map((url, index) => (
