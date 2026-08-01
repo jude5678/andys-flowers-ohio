@@ -20,7 +20,7 @@ const handler = async function(event) {
       to: requestBody.email,
       subject: "Wedding Inquiry",
       parameters: {
-        name: requestBody.name, // this gets injected into {{name}} in your template
+        name: requestBody.name, 
       },
     }),
   });

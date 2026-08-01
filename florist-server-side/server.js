@@ -12,6 +12,8 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors';
 import { Resend } from 'resend';
 import { useEffect, useState } from "react"
+import FormData from "form-data"; 
+import Mailgun from "mailgun.js"; 
 export default function ProductPrice({ id, region }){
     const [product, setProduct] = useState()}
 
@@ -270,42 +272,67 @@ app.post('/webhook', (req, res) => {
     }
 });
 
-// initialize resend with api key
-const resend = new Resend(process.env.RESEND_API_KEY);
-const fromEmail = process.env.EMAIL_FROM || "Andy <contact@andysflowersohio.com>";
+// // initialize resend with api key
+// const resend = new Resend(process.env.RESEND_API_KEY);
+// const fromEmail = process.env.EMAIL_FROM || "Andy <contact@andysflowersohio.com>";
 
-// email endpoint
-app.post('/weddings', async (req, res) => {
-  try {
-    const { name, email } = req.body;
+// // email endpoint
+// app.post('/weddings', async (req, res) => {
+//   try {
+//     const { name, email } = req.body;
 
-    // Validate inputs
-    if (!name || !email) {
-      return res.status(400).json({ error: "Name and email are required." });
-    }
+//     // Validate inputs
+//     if (!name || !email) {
+//       return res.status(400).json({ error: "Name and email are required." });
+//     }
 
-    // Trigger the email send via Resend
-    const { data, error } = await resend.emails.send({
-      from: fromEmail,
-      to: email, 
-      subject: `Wedding Consultation Request - ${name}`,
-      html: `<h1>Hi ${name}!</h1><p>Thank you for reaching out. We will get in touch with you soon to set up your wedding consultation.</p>`,
-      text: `Hi ${name}! Thank you for reaching out. We will get in touch with you soon to set up your wedding consultation.`
+//     // Trigger the email send via Resend
+//     const { data, error } = await resend.emails.send({
+//       from: fromEmail,
+//       to: email, 
+//       subject: `Wedding Consultation Request - ${name}`,
+//       html: `<h1>Hi ${name}!</h1><p>Thank you for reaching out. We will get in touch with you soon to set up your wedding consultation.</p>`,
+//       text: `Hi ${name}! Thank you for reaching out. We will get in touch with you soon to set up your wedding consultation.`
+//     });
+
+//     if (error) {
+//       console.error("Resend error:", error);
+//       return res.status(500).json({ error: error.message });
+//     }
+
+//     // Success response to React
+//     return res.status(200).json({ success: true, id: data?.id });
+
+//   } catch (err) {
+//     console.error("Server error:", err);
+//     return res.status(500).json({ error: "Internal server error." });
+//   }
+// });
+
+// mailgun rest api
+async function sendSimpleMessage() {
+    const mailgun = new Mailgun(FormData);
+    const mg = mailgun.client({
+      username: "api",
+      key: process.env.MAILGUN_API_KEY,
     });
-
-    if (error) {
-      console.error("Resend error:", error);
-      return res.status(500).json({ error: error.message });
+    try {
+      const data = await mg.messages.create("sandbox8debf8a93b4b48a8bfc15460d69f96f4.mailgun.org", {
+        from: "Mailgun Sandbox <postmaster@sandbox8debf8a93b4b48a8bfc15460d69f96f4.mailgun.org>",
+        to: ["Remi <j62910@gmail.com>"],
+        subject: "Hello Remi",
+        text: "Congratulations Remi, you just sent an email with Mailgun! You are truly awesome!",
+      });
+  
+      console.log(data); // logs response data
+    } catch (error) {
+      console.log(error); //logs any error
     }
+}
 
-    // Success response to React
-    return res.status(200).json({ success: true, id: data?.id });
+sendSimpleMessage()
 
-  } catch (err) {
-    console.error("Server error:", err);
-    return res.status(500).json({ error: "Internal server error." });
-  }
-});
+
 
 
 
