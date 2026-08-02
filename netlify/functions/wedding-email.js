@@ -11,7 +11,7 @@ const handler = async function(event) {
   const requestBody = JSON.parse(event.body);
 
   try {
-    const response = await fetch(`${process.env.URL}/.netlify/functions/emails/weddings`, {
+    const response = await fetch(`${process.env.URL}/.netlify/functions/emails`, {
       headers: {
         "netlify-emails-secret": process.env.NETLIFY_EMAILS_SECRET,
       },
