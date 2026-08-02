@@ -1,6 +1,6 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
-const handler = async function(event) {
+export const handler = async function(event) {
   if (event.body === null) {
     return {
       statusCode: 400,
@@ -22,7 +22,7 @@ const handler = async function(event) {
         subject: `New Wedding Inquiry from ${requestBody.name}`,
         parameters: {
           name: requestBody.name,
-          email: requestBody.email 
+          email: requestBody.email
         },
       }),
     });
@@ -42,5 +42,3 @@ const handler = async function(event) {
     return { statusCode: 500, body: JSON.stringify("Internal Server Error") };
   }
 };
-
-module.exports = { handler };
