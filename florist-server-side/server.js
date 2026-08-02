@@ -314,19 +314,19 @@ async function sendSimpleMessage() {
     const mailgun = new Mailgun(FormData);
     const mg = mailgun.client({
       username: "api",
-      key: process.env.MAILGUN_API_KEY,
+      key: process.env.MAILGUN_API_KEY || "***REMOVED***",
     });
     try {
       const data = await mg.messages.create("sandbox8debf8a93b4b48a8bfc15460d69f96f4.mailgun.org", {
-        from: "Mailgun Sandbox <postmaster@sandbox8debf8a93b4b48a8bfc15460d69f96f4.mailgun.org>",
+        from: "Mailgun Sandbox <postmaster@andysflowersohio.com>",
         to: ["Remi <j62910@gmail.com>"],
         subject: "Hello Remi",
         text: "Congratulations Remi, you just sent an email with Mailgun! You are truly awesome!",
       });
   
-      console.log(data); // logs response data
+      console.log(data); 
     } catch (error) {
-      console.log(error); //logs any error
+      console.log(error); 
     }
 }
 

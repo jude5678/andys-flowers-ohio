@@ -10,25 +10,37 @@ const handler = async function(event) {
 
   const requestBody = JSON.parse(event.body);
 
-  await fetch(`${process.env.URL}/.netlify/functions/emails/weddings`, {
-    headers: {
-      "netlify-emails-secret": process.env.NETLIFY_EMAILS_SECRET,
-    },
-    method: "POST",
-    body: JSON.stringify({
-      from: "sender@example.com",
-      to: requestBody.email,
-      subject: "Wedding Inquiry",
-      parameters: {
-        name: requestBody.name, 
+  try {
+    const response = await fetch(`${process.env.URL}/.netlify/functions/emails/weddings`, {
+      headers: {
+        "netlify-emails-secret": process.env.NETLIFY_EMAILS_SECRET,
       },
-    }),
-  });
+      method: "POST",
+      body: JSON.stringify({
+        from: "andysflowersohio.com", 
+        to: `${requestBody.email}`, 
+        subject: `New Wedding Inquiry from ${requestBody.name}`,
+        parameters: {
+          name: requestBody.name,
+          email: requestBody.email 
+        },
+      }),
+    });
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify("Email sent!"),
-  };
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Netlify Email Service Error:", errorText);
+      return { statusCode: 500, body: JSON.stringify("Failed to route email") };
+    }
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify("Email sent!"),
+    };
+  } catch (err) {
+    console.error("Function error:", err);
+    return { statusCode: 500, body: JSON.stringify("Internal Server Error") };
+  }
 };
 
 module.exports = { handler };
