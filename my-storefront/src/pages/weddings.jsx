@@ -3,11 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import { medusa } from "../lib/sdk";
 
 export default function WeddingsPage() {
-
+  // Local state for managing form submission UI feedback
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formStatus, setFormStatus] = useState('');
 
-  // fetch collection
+  // 1. Fetch the collection by handle and include its products using SDK methods
   const { data: collection, isLoading, error } = useQuery({
     queryKey: ['medusa-collection', 'weddings'],
     queryFn: async () => {
@@ -70,7 +70,7 @@ export default function WeddingsPage() {
     const data = Object.fromEntries(formData.entries());
   
     try {
-      const response = await fetch('/.netlify/functions/wedding-email', {
+      const response = await fetch('/.netlify/functions/triggerWeddingEmail', {
         method: 'POST',
         body: JSON.stringify({
           name: data.name,

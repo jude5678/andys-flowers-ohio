@@ -274,6 +274,7 @@ app.post('/webhook', (req, res) => {
 
 
 
+
 //serve files for all paths
 app.use('/assets', express.static(path.join(__dirname, 'html5up-alpha/assets')))
 

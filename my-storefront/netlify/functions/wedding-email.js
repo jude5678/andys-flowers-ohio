@@ -27,18 +27,8 @@ export const handler = async function(event) {
       }),
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Netlify Email Service Error:", errorText);
-      return { statusCode: 500, body: JSON.stringify("Failed to route email") };
-    }
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify("Email sent!"),
-    };
-  } catch (err) {
-    console.error("Function error:", err);
-    return { statusCode: 500, body: JSON.stringify("Internal Server Error") };
-  }
+  return {
+    statusCode: 200,
+    body: JSON.stringify("Email sent!"),
+  };
 };
