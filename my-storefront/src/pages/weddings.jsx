@@ -31,58 +31,38 @@ export default function WeddingsPage() {
     }
   });
 
-  // form submission tied to express route
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   setIsSubmitting(true);
-  //   setFormStatus('');
-  //   const formData = new FormData(event.target);
-  //   const data = Object.fromEntries(formData.entries());
-
-  //   try {
-  //     const response = await fetch('/weddings', {
-  //       netlify: "true",
-  //       name: 'weddings',
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ name: data.name, email: data.email }),
-  //     });
-  //     const result = await response.json();
-
-  //     if (response.ok) {
-  //       setFormStatus('Success! We will contact you soon.');
-  //       event.target.reset(); // clears input fields
-  //     } else {
-  //       setFormStatus(`Error: ${result.error || 'Failed to send email'}`);
-  //     }
-  //   } catch (err) {
-  //     setFormStatus('An error occurred. Please check your connection and try again.');
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
     setFormStatus('');
+    
+    // grab data from form inputs
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
   
+    // live medusa url
+    const BACKEND_URL = import.meta.env.VITE_MEDUSA_BACKEND_URL
+  
     try {
-      const response = await fetch('/.netlify/functions/triggerWeddingEmail', {
+      // point fetch url to medusa route
+      const response = await fetch(`${BACKEND_URL}/store/weddings`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' }, 
         body: JSON.stringify({
           name: data.name,
           email: data.email,
         }),
       });
   
-      if (response.ok) {
+      // medusa returns JSON
+      const result = await response.json();
+  
+      if (response.ok && result.success) {
         setFormStatus('Success! We will contact you soon.');
         event.target.reset();
       } else {
-        setFormStatus('Error: Failed to send email');
+        setFormStatus(`Error: ${result.error || 'Failed to send email'}`);
       }
     } catch (err) {
       setFormStatus('An error occurred. Please check your connection and try again.');
