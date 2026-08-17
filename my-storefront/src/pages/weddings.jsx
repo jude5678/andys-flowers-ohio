@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { medusa } from "../lib/sdk";
+// import { medusa } from "../lib/sdk";
 
 // initialize medusa
 const medusa = new Medusa({
