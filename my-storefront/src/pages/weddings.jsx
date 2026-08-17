@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-// import { medusa } from "../lib/sdk";
-
-// initialize medusa
-const medusa = new Medusa({
-  baseUrl: import.meta.env.VITE_MEDUSA_BACKEND_URL,
-  publishableApiKey: import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY
-});
+import { medusa } from "../lib/sdk";
 
 export default function WeddingsPage() {
   // Local state for managing form submission UI feedback
