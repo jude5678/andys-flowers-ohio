@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { medusa } from "../lib/sdk";
 
+// initialize medusa
+const medusa = new Medusa({
+  baseUrl: import.meta.env.VITE_MEDUSA_BACKEND_URL,
+  publishableApiKey: import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY
+});
+
 export default function WeddingsPage() {
   // Local state for managing form submission UI feedback
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +54,8 @@ export default function WeddingsPage() {
       // point fetch url to medusa route
       const response = await fetch(`${BACKEND_URL}/store/weddings`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }, 
+        headers: { 'Content-Type': 'application/json',
+        'x-publishable-api-key': import.meta.env.VITE_MEDUSA_PUBLISHABLE_KEY }, 
         body: JSON.stringify({
           name: data.name,
           email: data.email,
