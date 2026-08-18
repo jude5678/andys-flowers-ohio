@@ -43,7 +43,7 @@ export default function Home() {
           </section>
         </div>
 
-        <div className="features-row">
+        <div className="features-row" id="servicesSectionsTwo">
           <section>
             <span className="icon solid major fa-cloud accent4"></span>
             <h3>Plants</h3>
