@@ -340,12 +340,12 @@ export default function App() {
           <ul className="icons">
             <li>
               <a href="https://facebook.com" className="icon" aria-label="Facebook" target="_blank" rel="noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" style={{ fill: 'currentColor', width: '20px', height: '20px' }}>
-                  <path d="M80 299.3V256H12v-54.7h68v-39.7c0-67.4 41.1-104 101.2-104 28.8 0 53.5 2.1 60.7 3v70.5h-41.8c-32.7 0-39 15.5-39 38.3v50.2h78l-10.2 54.7h-67.8V448H164V299.3H80z"/>
+                <svg xmlns="http://w3.org" viewBox="0 0 448 512" style={{ fill: 'currentColor', width: '18px', height: '18px', verticalAlign: 'middle' }}>
+                  <path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h137.5V327.3h-63.1V256h63.1v-54.4c0-62.4 38-96.8 94-96.8 26.9 0 55 4.8 55 4.8v60.5h-31c-31 0-40.7 19.2-40.7 39v47h68.1l-10.9 71.3h-57.2V480H400c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48z"/>
                 </svg>
                 <span className="label">Facebook</span>
               </a>
-            </li> 
+            </li>
 
             <li>
               <a href="https://instagram.com" className="icon" aria-label="Instagram" target="_blank" rel="noreferrer">

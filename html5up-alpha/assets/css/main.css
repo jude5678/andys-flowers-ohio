@@ -4692,3 +4692,18 @@ span.material-symbols-outlined {
 	html, body {
 		overflow-x: clip;
 	  }
+
+/* navigation button */
+
+#navButton .toggle:before,
+#navButton .toggle,
+#navButton a:before {
+  content: "" !important; 
+  font-family: sans-serif !important; 
+  
+  /* Redraws the 3 lines directly using modern CSS */
+  background-image: linear-gradient(to bottom, #fff 20%, transparent 20%, transparent 40%, #fff 40%, #fff 60%, transparent 60%, transparent 80%, #fff 80%) !important;
+  background-size: 18px 12px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+}
